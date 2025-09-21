@@ -1,0 +1,69 @@
+<script>
+    function analyzeApplication(text) {
+  function getName() {
+    let line = text.match(/Applicant:\s*(.+)/i);
+    if (!line) return "";
+    return line[1].trim().toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function getEmails() {
+    let emails = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/g) || [];
+    emails = emails.map(e => e.toLowerCase());
+    return { primary: emails[0] || "", alt: emails.slice(1) };
+  }
+
+  function getPhone() {
+
+    let match = text.match(/\+91-(\d{10})/);
+    if (match) {
+        // Validate first digit is 6-9
+        if (/^[6-9]/.test(match[1])) {
+            return match[0];
+        } else {
+            return "Invalid phone number";
+        }
+    } else {
+        return "Invalid phone number";
+    }
+}
+
+  function getSkills() {
+    let line = text.match(/Skills:\s*(.+)/i);
+    if (!line) return [];
+    return line[1].split(/[,]+/).map(s => s.trim()).filter(s => s);
+  }
+
+  function getHashtags() {
+    return text.match(/#[A-Za-z0-9]+/g) || [];
+  }
+
+  function getSalary() {
+    let match = text.match(/Salary:\s*.*?([\d,]+)/i);
+    if (!match) return 0;
+    return parseInt(match[1].replace(/,/g, ""));
+  }
+
+  function getWordCount() {
+    return (text.trim().match(/\b\w+\b/g) || []).length;
+  }
+
+  function getVowelCount() {
+    return (text.match(/[aeiouAEIOU]/g) || []).length;
+  }
+
+  let emails = getEmails();
+  return {
+    applicant: getName(),
+    primaryEmail: emails.primary,
+    altEmails: emails.alt,
+    phone: getPhone(),
+    skills: getSkills(),
+    hashtags: getHashtags(),
+    salary: getSalary(),
+    wordCount: getWordCount(),
+    vowelCount: getVowelCount()
+  };
+}
+application1=prompt("enter the application text:");
+console.log(analyzeApplication(application1));
+</script>

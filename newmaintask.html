@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grading Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5fdbd;
+      padding: 20px;
+      margin: 0;
+    }
+    h2 {
+      font-family: serif;
+      font-size: xx-large;
+      text-align: center;
+      color: #320064;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #e8b23d;
+      padding: 20px;
+      border: 4px solid chocolate;
+    }
+    .student-box {
+      border: 4px solid #ffa600b1;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: #f5e6bc;
+      transition: background 0.3s;
+    }
+    .top-scorer {
+      background-color: #9bda8e !important;
+      border: green solid;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      transform: translateY(-5px);
+    }
+    .top-scorer b {
+      color: black;
+    }
+    input[type="range"] {
+      width: 60%;
+    }
+    input[type="number"], select {
+      margin-top: 5px;
+      padding: 5px;
+      width: 60%;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #330061;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px 0;
+      display: block;
+    }
+    button:hover {
+      background-color: #5d23a4;
+    }
+    p {
+      font-size: 14px;
+      color: #555;
+    }
+    b {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      color: #1d004b;
+    }
+    .me {
+      font-family: monospace;
+      text-align: center;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <h2>INTERNAL ASSESSMENT GRADING</h2>
+  <div class="container">
+    <div class="student-box" id="student0">
+      <b>Mahek Shah - 23070521086</b><br>
+      Subject 1: 
+      <input type="range" id="s1-0" min="0" max="100" oninput="updateSliderValue(0)">
+      <span id="s1val-0">0</span><br>
+      Subject 2: <input type="number" id="s2-0" min="0" max="100"><br>
+      Subject 3: 
+      <select id="sub-0"></select>
+      <input type="number" id="s3-0" min="0" max="100"><br>
+      <div id="res0"></div>
+    </div>
+
+    <div class="student-box" id="student1">
+      <b>Purva Tagde - 23070521111</b><br>
+      Subject 1: 
+      <input type="range" id="s1-1" min="0" max="100" oninput="updateSliderValue(1)">
+      <span id="s1val-1">0</span><br>
+      Subject 2: <input type="number" id="s2-1" min="0" max="100"><br>
+      Subject 3: 
+      <select id="sub-1"></select>
+      <input type="number" id="s3-1" min="0" max="100"><br>
+      <div id="res1"></div>
+    </div>
+
+    <div class="student-box" id="student2">
+      <b>Shreyasi Gidmare - 23070521146</b><br>
+      Subject 1: 
+      <input type="range" id="s1-2" min="0" max="100" oninput="updateSliderValue(2)">
+      <span id="s1val-2">0</span><br>
+      Subject 2: <input type="number" id="s2-2" min="0" max="100"><br>
+      Subject 3: 
+      <select id="sub-2"></select>
+      <input type="number" id="s3-2" min="0" max="100"><br>
+      <div id="res2"></div>
+    </div>
+
+    <button onclick="calculate()">Submit</button>
+    <p class="me">Created by Manasvi Puranik</p>
+    <p class="me">Time: <span id="time"></span></p>
+  </div>
+
+  <script>
+    const subjects = ["Maths", "Science", "English"];
+    for (let i = 0; i < 3; i++) {
+      const select = document.getElementById("sub-" + i);
+      subjects.forEach(sub => {
+        const opt = document.createElement("option");
+        opt.value = sub;
+        opt.text = sub;
+        select.appendChild(opt);
+      });
+    }
+    function updateSliderValue(i) {
+      const val = document.getElementById("s1-" + i).value;
+      document.getElementById("s1val-" + i).innerText = val;
+    }
+    function calculate() {
+      let topAverage = -1;
+      let topStudent = -1;
+      for (let i = 0; i < 3; i++) {
+        let m1 = parseInt(document.getElementById("s1-" + i).value || 0);
+        let m2 = parseInt(document.getElementById("s2-" + i).value || 0);
+        let m3 = parseInt(document.getElementById("s3-" + i).value || 0);
+
+        if ([m1, m2, m3].some(m => isNaN(m) || m < 0 || m > 100)) {
+          alert("Enter valid marks for Student " + (i + 1));
+          return;
+        }
+        let avg = Math.round((m1 + m2 + m3) / 3);
+        let grade = avg >= 90 ? "A" : avg >= 75 ? "B" : avg >= 50 ? "C" : "F";
+        let remark = avg >= 90 ? "Excellent" :
+                     avg >= 75 ? "Good" :
+                     avg >= 50 ? "Needs Improvement" : "Fail";
+
+        document.getElementById("res" + i).innerHTML = 
+          `Average: ${avg}<br>Grade: ${grade}<br>Remark: ${remark}`;
+
+        document.getElementById("student" + i).classList.remove("top-scorer");
+
+        if (avg > topAverage) {
+          topAverage = avg;
+          topStudent = i;
+        }
+      }
+      if (topStudent !== -1) {
+        document.getElementById("student" + topStudent).classList.add("top-scorer");
+      }
+      document.getElementById("time").innerText = new Date().toLocaleString();
+    }
+  </script>
+</body>8
+</html>
